@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Environment Variables (Maha Zaroori)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build files
+dist/
+build/
+
+# Uploaded PDFs (Taki dummy PDFs git pe na jaye)
+backend/uploads/
+uploads/
+
+# Misc
+.DS_Store
+*.pem
+npm-debug.log*
