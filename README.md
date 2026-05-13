@@ -2,6 +2,7 @@
 
 OpsMind AI is an intelligent, full-stack Enterprise Assistant powered by **RAG (Retrieval-Augmented Generation)** and **Google's Gemini AI**. It allows users to upload complex PDF documents (like SOPs, policy guidelines, and project manuals) and ask natural language questions to get highly accurate, context-aware answers complete with exact page references.
 
+
 ---
 
 ## ✨ Key Features
