@@ -27,7 +27,7 @@ export default function Sidebar({
   };
 
   const handleDelete = (e, id) => {
-    e.stopPropagation(); // Chat switch hone se rokne ke liye
+    e.stopPropagation(); // To prevent chat switch 
     if (window.confirm('Are you sure you want to delete this chat?')) {
       deleteSession(id);
     }
