@@ -6,7 +6,6 @@ require('dotenv').config();
 const { handleChat } = require('./controllers/chatController');
 const { signup, login } = require('./controllers/authController');
 
-// Ye controller humne pichle step mein banaya tha
 const { processUpload } = require('./controllers/uploadController');
 const app = express();
 app.use(cors());
@@ -15,7 +14,7 @@ app.use(express.json());
 // 1. Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB Connected Successfully!'))
+  .then(() => console.log('✅ MongoDB Connected Successfully!!!'))
   .catch((err) => console.error('❌ MongoDB Connection Error:', err));
 
 // 2. Setup Multer for PDF upload
