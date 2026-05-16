@@ -29,7 +29,7 @@ export default function AuthModal({ onClose, onLoginSuccess }) {
 
       onLoginSuccess(res.data.user);
     } catch (err) {
-      setError(err.response?.data?.error || 'Something went wrong!');
+      setError(err.response?.data?.error || 'Something went wrong!!!');
     } finally {
       setIsLoading(false);
     }
@@ -51,7 +51,7 @@ export default function AuthModal({ onClose, onLoginSuccess }) {
         </h2>
         <p className="text-slate-400 mb-8">
           {isLogin
-            ? 'Login to continue your OpsMind session.'
+            ? 'Please Login to continue your OpsMind session.'
             : 'Sign up to start chatting with your SOPs.'}
         </p>
 
