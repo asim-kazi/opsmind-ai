@@ -8,7 +8,7 @@ async function checkModels() {
     );
     const data = await response.json();
 
-    console.log('✅ AAPKI API KEY PAR YE MODELS ALLOWED HAIN:\n');
+    console.log('✅ This Models are allowed on your api key :\n');
     data.models.forEach((m) => {
       // Sirf wo models dikhayenge jo text generate kar sakte hain
       if (m.supportedGenerationMethods.includes('generateContent')) {
