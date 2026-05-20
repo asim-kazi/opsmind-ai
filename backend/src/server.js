@@ -5,11 +5,13 @@ const cors = require('cors');
 require('dotenv').config();
 const { handleChat } = require('./controllers/chatController');
 const { signup, login } = require('./controllers/authController');
+const authRoutes = require('./routes/authRoutes');
 
 const { processUpload } = require('./controllers/uploadController');
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/api/auth', authRoutes);
 
 // 1. Connect to MongoDB
 mongoose

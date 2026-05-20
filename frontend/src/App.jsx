@@ -4,12 +4,10 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import ChatArea from './components/ChatArea';
 import AuthModal from './components/AuthModal';
+import { useAuth } from './context/AuthContext';
 
 function App() {
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('opsmind_user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const { user, logout } = useAuth();
 
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -30,46 +28,79 @@ function App() {
 
   // Update localStorage whenever sessions or user changes
   useEffect(() => {
-    if (user) {
-      localStorage.setItem(
-        `opsmind_chats_${user.email}`,
-        JSON.stringify(sessions),
-      );
+    if (!user) return;
+
+    if (sessions.length === 0) return;
+
+    const hasMessages = sessions.some(
+      (session) =>
+        session.messages.length > 0 || session.uploadedFiles.length > 0,
+    );
+
+    if (
+      !hasMessages &&
+      sessions.length === 1 &&
+      sessions[0].title === 'New Chat'
+    ) {
+      return;
     }
+
+    localStorage.setItem(
+      `opsmind_chats_${user.email}`,
+
+      JSON.stringify(sessions),
+    );
   }, [sessions, user]);
 
   // Agar user change hota hai (Login/Logout), toh session refresh karo
   useEffect(() => {
+    console.log('USER CHANGED', user);
+
     if (user) {
       const saved = localStorage.getItem(`opsmind_chats_${user.email}`);
+
       const loadedSessions = saved
         ? JSON.parse(saved)
         : [
             {
               id: Date.now(),
+
               title: 'New Chat',
+
               messages: [],
+
               uploadedFiles: [],
             },
           ];
+
       setSessions(loadedSessions);
+
       setActiveSessionId(loadedSessions[0].id);
     } else {
-      setSessions([
-        { id: Date.now(), title: 'New Chat', messages: [], uploadedFiles: [] },
-      ]);
+      const fresh = {
+        id: Date.now(),
+
+        title: 'New Chat',
+
+        messages: [],
+
+        uploadedFiles: [],
+      };
+
+      setSessions([fresh]);
+
+      setActiveSessionId(fresh.id);
     }
   }, [user]);
 
-  const handleLoginSuccess = (userData) => {
-    setUser(userData);
+  const handleLoginSuccess = () => {
     setShowAuthModal(false);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('opsmind_token');
-    localStorage.removeItem('opsmind_user');
-    setUser(null);
+    logout();
+
+    setShowAuthModal(false);
   };
 
   // ... (createNewChat, updateActiveSession, renameSession, deleteSession functions remain exactly the same as before) ...

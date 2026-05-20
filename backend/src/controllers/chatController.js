@@ -6,37 +6,85 @@ const DocumentChunk = require('../models/DocumentChunk');
 
 exports.handleChat = async (req, res) => {
   try {
-    const { message } = req.body;
+    const {
+      message,
+
+      uploadedFiles = [],
+    } = req.body;
     if (!message) return res.status(400).json({ error: 'Message is required' });
 
     // 1. User ke message ka vector banao
     const queryEmbedding = await generateEmbedding(message);
 
     // 2. MongoDB Vector Search
-    const searchResults = await DocumentChunk.aggregate([
+    let searchResults = await DocumentChunk.aggregate([
       {
         $vectorSearch: {
           index: 'vector_index',
+
           path: 'embedding',
+
           queryVector: queryEmbedding,
+
           numCandidates: 100,
-          limit: 10,
+
+          limit: 15,
         },
       },
+
       {
-        $project: { _id: 0, fileName: 1, text: 1 },
+        $project: {
+          _id: 0,
+
+          fileName: 1,
+
+          text: 1,
+        },
       },
     ]);
+
+    // 🔥 Session file filter
+
+    if (uploadedFiles.length > 0) {
+      searchResults = searchResults.filter((doc) =>
+        uploadedFiles.includes(doc.fileName),
+      );
+    }
 
     // 3. SSE Headers Set karo (Streaming ke liye zaroori hai)
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
+    if (uploadedFiles.length === 0) {
+      const stream = await generateChatStream(
+        message,
+
+        [],
+      );
+
+      for await (const chunk of stream) {
+        res.write(
+          `data: ${JSON.stringify({
+            text: chunk.text(),
+          })}\n\n`,
+        );
+      }
+
+      res.write(`data: [DONE]\n\n`);
+
+      return res.end();
+    }
+
     if (searchResults.length === 0) {
       res.write(
-        `data: ${JSON.stringify({ text: "I couldn't find any relevant documents." })}\n\n`,
+        `data:${JSON.stringify({
+          text: 'No relevant information found in uploaded PDFs.',
+        })}\n\n`,
       );
+
+      res.write(`data:[DONE]\n\n`);
+
       return res.end();
     }
 
