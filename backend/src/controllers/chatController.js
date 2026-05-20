@@ -57,7 +57,6 @@ exports.handleChat = async (req, res) => {
     res.end();
   } catch (error) {
     console.error('Chat Error:', error);
-    // 🔥 FIX: Agar streaming start nahi hui thi, tabhi JSON error bhejo
     if (!res.headersSent) {
       res.status(500).json({ error: 'Failed to process chat' });
     } else {
