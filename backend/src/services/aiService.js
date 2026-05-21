@@ -52,8 +52,27 @@ async function generateChatStream(query, contextChunks) {
     const result = await model.generateContentStream(prompt);
     return result.stream;
   } catch (error) {
-    console.error('Chat Generation Error:', error);
-    throw new Error('Failed to generate AI response');
+    console.error(
+      'Chat Generation Error:',
+
+      error,
+    );
+
+    return {
+      async *[Symbol.asyncIterator]() {
+        yield {
+          text() {
+            return;
+            `OpsMind AI is busy right now.
+
+Reason:
+Gemini API overloaded.
+
+Please retry after few seconds.`;
+          },
+        };
+      },
+    };
   }
 }
 

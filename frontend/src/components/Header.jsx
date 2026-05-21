@@ -5,7 +5,7 @@ export default function Header({ user, onLogout, onLoginClick }) {
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg shadow-teal-500/20">
           ✦
         </div>
-        OpsMind AI 👾
+        OpsMind AI
       </div>
 
       <div className="flex gap-4 items-center">

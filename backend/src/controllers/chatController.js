@@ -93,7 +93,33 @@ exports.handleChat = async (req, res) => {
     res.write(`data: ${JSON.stringify({ sources: uniqueSources })}\n\n`);
 
     // 5. Stream the AI response
-    const stream = await generateChatStream(message, searchResults);
+    let stream;
+
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        stream = await generateChatStream(
+          message,
+
+          searchResults,
+        );
+
+        break;
+      } catch (error) {
+        console.log(`Retry ${attempt}`);
+
+        if (attempt === 3) {
+          throw error;
+        }
+
+        await new Promise((resolve) =>
+          setTimeout(
+            resolve,
+
+            2000,
+          ),
+        );
+      }
+    }
 
     for await (const chunk of stream) {
       const chunkText = chunk.text();

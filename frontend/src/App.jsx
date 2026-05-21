@@ -139,19 +139,35 @@ function App() {
 
   const deleteSession = (id) => {
     setSessions((prev) => {
-      const remainingSessions = prev.filter((session) => session.id !== id);
-      if (remainingSessions.length === 0) {
-        const newSession = {
-          id: Date.now(),
-          title: 'New Chat',
-          messages: [],
-          uploadedFiles: [],
-        };
-        setActiveSessionId(newSession.id);
-        return [newSession];
+      let remaining = prev.filter((session) => session.id !== id);
+
+      if (remaining.length === 0) {
+        remaining = [
+          {
+            id: Date.now(),
+
+            title: 'New Chat',
+
+            messages: [],
+
+            uploadedFiles: [],
+          },
+        ];
       }
-      if (activeSessionId === id) setActiveSessionId(remainingSessions[0].id);
-      return remainingSessions;
+
+      if (activeSessionId === id) {
+        setActiveSessionId(remaining[0].id);
+      }
+
+      if (user) {
+        localStorage.setItem(
+          `opsmind_chats_${user.email}`,
+
+          JSON.stringify(remaining),
+        );
+      }
+
+      return remaining;
     });
   };
 
